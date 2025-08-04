@@ -8,14 +8,14 @@ import (
 	"github.com/rugi123/chirp/internal/config"
 )
 
-type ChatRepository struct {
-	Pool *pgxpool.Pool
+type ChatRepo struct {
+	pool *pgxpool.Pool
 }
 
-func NewChatRepo(ctx context.Context, cfg config.Postgres) (*ChatRepository, error) {
-	conn := fmt.Sprintf(`postgres://%s:%s@%s:%s/%s?sslmode=%s`, cfg.DBName, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName, cfg.SSLMode)
+func NewChatRepo(ctx context.Context, cfg config.Postgres) (*ChatRepo, error) {
+	conn := fmt.Sprintf(`postgres://%s:%s@%s:%s/%s?sslmode=%s`, cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName, cfg.SSLMode)
 	pool, err := pgxpool.New(ctx, conn)
-	return &ChatRepository{
-		Pool: pool,
+	return &ChatRepo{
+		pool: pool,
 	}, err
 }

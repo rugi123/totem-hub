@@ -1,10 +1,15 @@
 package entity
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Message struct {
-	ID     uuid.UUID
-	UserID uuid.UUID
-	ChatID uuid.UUID
-	Text   string
+	ID         uuid.UUID
+	ChatMember ChatMember
+	Text       string
+	SentAt     time.Time
+	EditedAt   time.Time
 }

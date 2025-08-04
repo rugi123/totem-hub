@@ -6,9 +6,9 @@ import (
 )
 
 type Repository interface {
-	RecieveMessages(id int) (*entity.User, error)
-	SendMessage(user *entity.User) error
-	EditMessage(user *entity.User) error
+	GetMessages(id int) (*entity.User, error)
+	CreateMessage(user *entity.User) error
+	UpdateMessage(user *entity.User) error
 	DeleteMessage(id int) error
 }
 
