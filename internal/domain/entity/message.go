@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -11,5 +12,5 @@ type Message struct {
 	ChatMember ChatMember
 	Text       string
 	SentAt     time.Time
-	EditedAt   time.Time
+	EditedAt   sql.NullTime
 }

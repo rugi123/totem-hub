@@ -8,18 +8,14 @@ import (
 )
 
 type GetChatResponse struct {
-	ID        uuid.UUID
-	Name      string
-	Members   []entity.ChatMember
-	CreatedAt time.Time
-	CreatedBy uuid.UUID
+	ID        uuid.UUID           `json:"id"`
+	Name      string              `json:"name"`
+	Members   []entity.ChatMember `json:"chat_members"`
+	CreatedAt time.Time           `json:"created_at"`
+	CreatedBy uuid.UUID           `json:"created_by"`
 }
-
-//create chat
 
 type CreateChatRequest struct {
-}
-
-type CreateChatResponse struct {
-	ID uuid.UUID
+	Name      string    `json:"name" validate:"max=32"`
+	CreatedBy uuid.UUID `json:"created_by"`
 }

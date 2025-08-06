@@ -16,13 +16,13 @@ type Repository interface {
 }
 
 type Usecase struct {
-	Repo   Repository
-	Config config.Config
+	repo   Repository
+	config config.Config
 }
 
 func NewAuthUsecase(cfg config.Config, repo Repository) *Usecase {
 	return &Usecase{
-		Config: cfg,
-		Repo:   repo,
+		config: cfg,
+		repo:   repo,
 	}
 }

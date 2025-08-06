@@ -12,26 +12,26 @@ import (
 	"github.com/rugi123/chirp/internal/domain/entity"
 )
 
-type ChatRepo struct {
+type MemberRepo struct {
 	pool *pgxpool.Pool
 }
 
-func NewChatRepo(ctx context.Context, cfg config.Postgres) (*ChatRepo, error) {
+func NewMemberRepo(ctx context.Context, cfg config.Postgres) (*MemberRepo, error) {
 	conn := fmt.Sprintf(`postgres://%s:%s@%s:%s/%s?sslmode=%s`, cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName, cfg.SSLMode)
 	pool, err := pgxpool.New(ctx, conn)
-	return &ChatRepo{
+	return &MemberRepo{
 		pool: pool,
 	}, err
 }
 
-func (r *ChatRepo) GetChat(ctx context.Context, id int) (*entity.Chat, error) {
+func (r *MemberRepo) GetMember(ctx context.Context, id int) (*entity.ChatMember, error) {
 	query := `
-		SELECT id, is_private, created_at, created_by
-		FROM chats
+		SELECT id, user_id, chat_id, role FROM chat_members
+		FROM chat_members
 		WHERE id = $1
 		`
-	var chat entity.Chat
-	err := r.pool.QueryRow(ctx, query, id).Scan(&chat.ID, &chat.IsPrivate, &chat.CreatedAt, &chat.CreatedBy)
+	var member entity.ChatMember
+	err := r.pool.QueryRow(ctx, query, id).Scan(&member.ID, &member.UserID, &member.ChatID, &member.Role)
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
 			return nil, fmt.Errorf("context canceled: %w", err)
@@ -41,14 +41,14 @@ func (r *ChatRepo) GetChat(ctx context.Context, id int) (*entity.Chat, error) {
 		}
 		return nil, fmt.Errorf("postgres error: %w", err)
 	}
-	return &chat, nil
+	return &member, nil
 }
-func (r *ChatRepo) CreateChat(ctx context.Context, chat *entity.Chat) error {
+func (r *MemberRepo) CreateMember(ctx context.Context, member *entity.ChatMember) error {
 	query := `
-		INSERT INTO chats (id, is_private, created_at, created_by)
+		INSERT INTO chat_members (id, user_id, chat_id, role)
 		VALUES($1, $2, $3, $4)
 		`
-	_, err := r.pool.Exec(ctx, query, chat.ID, chat.IsPrivate, chat.CreatedAt, chat.CreatedBy)
+	_, err := r.pool.Exec(ctx, query, member.ID, member.UserID, member.ChatID, member.Role)
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
 			return fmt.Errorf("context canceled: %w", err)
@@ -57,9 +57,9 @@ func (r *ChatRepo) CreateChat(ctx context.Context, chat *entity.Chat) error {
 	}
 	return nil
 }
-func (r *ChatRepo) UpdateChat(ctx context.Context, chat *entity.Chat) error {
+func (r *MemberRepo) UpdateMember(ctx context.Context, member *entity.ChatMember) error {
 	return nil
 }
-func (r *ChatRepo) DeleteChat(ctx context.Context, id int) error {
+func (r *MemberRepo) DeleteMember(ctx context.Context, id int) error {
 	return nil
 }

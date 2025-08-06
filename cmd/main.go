@@ -11,9 +11,6 @@ import (
 
 	"github.com/rugi123/chirp/internal/config"
 	"github.com/rugi123/chirp/internal/repository/postgres"
-	authUsecase "github.com/rugi123/chirp/internal/usecase/auth"
-	chatUsecase "github.com/rugi123/chirp/internal/usecase/chat"
-	msgUsecase "github.com/rugi123/chirp/internal/usecase/message"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -26,7 +23,6 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	//graceful shutdown
 	go func() {
 		sigChan := make(chan os.Signal, 1)
 		signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
@@ -35,19 +31,18 @@ func main() {
 		cancel()
 	}()
 
-	//initialization repository context
 	initCtx, initCancel := context.WithTimeout(ctx, 10*time.Second)
 	defer initCancel()
 
 	g, gCtx := errgroup.WithContext(initCtx)
 
 	var (
-		userRepo *postgres.UserRepo
-		chatRepo *postgres.ChatRepo
-		msgRepo  *postgres.MessageRepo
+		userRepo   *postgres.UserRepo
+		chatRepo   *postgres.ChatRepo
+		memberRepo *postgres.MemberRepo
+		msgRepo    *postgres.MessageRepo
 	)
 
-	//parallel initialization repositories
 	g.Go(func() error {
 		var err error
 		userRepo, err = postgres.NewUserRepo(gCtx, cfg.Postgres)
@@ -66,6 +61,14 @@ func main() {
 	})
 	g.Go(func() error {
 		var err error
+		memberRepo, err = postgres.NewMemberRepo(gCtx, cfg.Postgres)
+		if err != nil {
+			return fmt.Errorf("failed to init chat repo: %w", err)
+		}
+		return nil
+	})
+	g.Go(func() error {
+		var err error
 		msgRepo, err = postgres.NewMessageRepo(gCtx, cfg.Postgres)
 		if err != nil {
 			return fmt.Errorf("failed to init message repo: %w", err)
@@ -77,10 +80,7 @@ func main() {
 		log.Fatalf("initialization failed: %v", err)
 	}
 
-	//initialization usecases
-
-	authUC := authUsecase.NewAuthUsecase(cfg, userRepo)
-	chatUC := chatUsecase.NewChatUsecase(cfg, chatRepo)
-	msgUC := msgUsecase.NewMessageUsecase(cfg, msgRepo)
+	//тут юзкейсы
+	fmt.Println(userRepo, chatRepo, memberRepo, msgRepo)
 
 }

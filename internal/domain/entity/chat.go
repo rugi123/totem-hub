@@ -8,7 +8,6 @@ import (
 
 type Chat struct {
 	ID        uuid.UUID
-	Name      string
 	IsPrivate bool
 	CreatedAt time.Time
 	CreatedBy uuid.UUID ///user id
