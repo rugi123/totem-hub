@@ -1,4 +1,4 @@
-package usecase
+package auth
 
 import (
 	"context"
@@ -17,12 +17,12 @@ type Repository interface {
 
 type Usecase struct {
 	repo   Repository
-	config config.Config
+	Config config.Config
 }
 
 func NewAuthUsecase(cfg config.Config, repo Repository) *Usecase {
 	return &Usecase{
-		config: cfg,
+		Config: cfg,
 		repo:   repo,
 	}
 }
