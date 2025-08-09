@@ -6,14 +6,22 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rugi123/chirp/internal/dto"
+	"github.com/rugi123/chirp/pkg/validator"
 )
 
-func (h *Handler) GetUser(ctx *gin.Context) {
+func (h *Handler) Login(ctx *gin.Context) {
 	var dto dto.LoginRequest
 	err := ctx.ShouldBindBodyWithJSON(&dto)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": "parse json: " + err.Error(),
+		})
+		return
+	}
+
+	if err := validator.Validate(dto); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "validate error: " + err.Error(),
 		})
 		return
 	}
@@ -33,12 +41,19 @@ func (h *Handler) GetUser(ctx *gin.Context) {
 	ctx.Redirect(http.StatusPermanentRedirect, "/profile")
 }
 
-func (h *Handler) CreateUser(ctx *gin.Context) {
+func (h *Handler) Register(ctx *gin.Context) {
 	var dto dto.RegisterRequest
 	err := ctx.ShouldBindBodyWithJSON(&dto)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": "parse json: " + err.Error(),
+		})
+		return
+	}
+
+	if err := validator.Validate(dto); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "validate error: " + err.Error(),
 		})
 		return
 	}

@@ -8,16 +8,10 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/rugi123/chirp/internal/dto"
 	"github.com/rugi123/chirp/internal/transport"
-	"github.com/rugi123/chirp/pkg/validator"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func (u *Usecase) Login(ctx context.Context, req dto.LoginRequest) (string, error) {
-	// валидацию надо вынести в обработчик чтобы сразу отдавать фронтенду ошибку
-	if err := validator.Validate(req); err != nil {
-		return "", fmt.Errorf("validate error: %w", err)
-	}
-
 	user, err := u.repo.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		return "", fmt.Errorf("get user error: %w", err)

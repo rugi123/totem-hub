@@ -26,7 +26,6 @@ document.getElementById('login-form').addEventListener('submit', async function 
         }
 
         const result = await response.json();
-        console.log('Успешно:', result);
         window.location.href = "/profile";
     } catch (error) {
         console.error('Ошибка:', error);

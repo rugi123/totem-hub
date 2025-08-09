@@ -22,8 +22,8 @@ func (h *Handler) RegisterRoutes(r *gin.Engine) {
 			ctx.HTML(http.StatusOK, "register.html", nil)
 		})
 
-		authGroup.POST("/login", h.GetUser)
-		authGroup.POST("/register", h.CreateUser)
+		authGroup.POST("/login", h.Login)
+		authGroup.POST("/register", h.Register)
 	}
 
 	apiGroup := r.Group("/api")
@@ -32,7 +32,8 @@ func (h *Handler) RegisterRoutes(r *gin.Engine) {
 		chatGroup := apiGroup.Group("/chats")
 		{
 			//все чаты
-			chatGroup.GET("/")
+			chatGroup.GET("/", transport.AuthMiddleware(h.authUC.Config.App.JWTKey), h.LoadChatList)
+
 			//конкретный чат
 			chatGroup.GET("/:id")
 			chatGroup.POST("/:id")

@@ -2,13 +2,12 @@ package postgres
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rugi123/chirp/internal/config"
-	"github.com/rugi123/chirp/internal/domain"
 	"github.com/rugi123/chirp/internal/domain/entity"
 )
 
@@ -24,24 +23,30 @@ func NewMemberRepo(ctx context.Context, cfg config.Postgres) (*MemberRepo, error
 	}, err
 }
 
-func (r *MemberRepo) GetMember(ctx context.Context, id int) (*entity.ChatMember, error) {
+func (r *MemberRepo) GetMemberIDs(ctx context.Context, user_id int) ([]uuid.UUID, error) { // всеее  в монг дб
 	query := `
-		SELECT id, user_id, chat_id, role FROM chat_members
-		FROM chat_members
-		WHERE id = $1
+		SELECT id FROM chat_members
+		WHERE user_id = $1
 		`
-	var member entity.ChatMember
-	err := r.pool.QueryRow(ctx, query, id).Scan(&member.ID, &member.UserID, &member.ChatID, &member.Role)
+	rows, err := r.pool.Query(ctx, query, user_id)
 	if err != nil {
-		if errors.Is(err, context.Canceled) {
-			return nil, fmt.Errorf("context canceled: %w", err)
-		}
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, domain.ErrNotFound
-		}
 		return nil, fmt.Errorf("postgres error: %w", err)
 	}
-	return &member, nil
+	defer rows.Close()
+
+	IDs := make([]uuid.UUID, 0)
+	for rows.Next() {
+		var id uuid.UUID
+		if err = rows.Scan(&id); err != nil {
+			return nil, fmt.Errorf("scan error: %w", err)
+		}
+		IDs = append(IDs, id)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return IDs, nil
 }
 func (r *MemberRepo) CreateMember(ctx context.Context, member *entity.ChatMember) error {
 	query := `

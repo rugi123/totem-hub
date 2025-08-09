@@ -3,21 +3,22 @@ package chat
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/rugi123/chirp/internal/config"
 	"github.com/rugi123/chirp/internal/domain/entity"
 )
 
 type ChatRepository interface {
-	GetChat(ctx context.Context, id int) (*entity.Chat, error)
+	GetAllUserChats(ctx context.Context, user_id uuid.UUID) ([]entity.Chat, error)
 	CreateChat(ctx context.Context, chat *entity.Chat) error
 	UpdateChat(ctx context.Context, chat *entity.Chat) error
-	DeleteChat(ctx context.Context, id int) error
+	DeleteChat(ctx context.Context, chat_id uuid.UUID) error
 }
 type MemberRepository interface {
-	GetMember(ctx context.Context, id int) (*entity.ChatMember, error)
+	GetMemberIDs(ctx context.Context, user_id uuid.UUID) ([]entity.ChatMember, error)
 	CreateMember(ctx context.Context, member *entity.ChatMember) error
 	UpdateMember(ctx context.Context, member *entity.ChatMember) error
-	DeleteMember(ctx context.Context, id int) error
+	DeleteMember(ctx context.Context, member_id uuid.UUID) error
 }
 
 type Usecase struct {

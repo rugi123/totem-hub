@@ -9,7 +9,6 @@ document.getElementById('register-form').addEventListener('submit', async functi
     });
 
     const jsonData = JSON.stringify(formObject);
-    console.log(jsonData)
 
     try {
         // Отправляем данные на сервер
@@ -22,14 +21,34 @@ document.getElementById('register-form').addEventListener('submit', async functi
         });
 
         if (!response.ok) {
-            throw new Error('Ошибка сети');
+            const error = await response.json();
+            throw error
         }
 
-        const result = await response.json();
-        console.log('Успешно:', result);
+        window.location.href = "/auth/login";
     } catch (error) {
-        console.error('Ошибка:', error);
-        // Обработка ошибок
+        const errorMessage = error.error.replace(/;/g, '');
+
+        const parts = errorMessage
+            .split('error in field ')
+            .slice(1);
+        const result = parts.reduce((obj, item) => {
+            const [key, value] = item.split(":");
+            obj[key] = value;
+            return obj;
+        }, {});
+        console.log(result);
+
+        const errPanel = document.getElementById("error-panel")
+
+        errPanel.innerHTML = '';
+
+        if (result['Password'] === 'min') {
+            errPanel.innerHTML += '<snap class="err-item">пароль слишком короткий</snap>';
+        }
+        if (result['Name'] === 'min') {
+            errPanel.innerHTML += '<snap class="err-item">никнейм слишком короткий</snap>';
+        }
     }
 
 });

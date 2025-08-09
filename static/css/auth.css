@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-
     gap: 5px;
 }
 
@@ -10,4 +9,30 @@ form {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.error-panel {
+    display: none;
+}
+
+.error-panel:not(:empty) {
+    background-color: rgba(255, 181, 181, 0.9);
+    /* добавил прозрачность */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 5px;
+    border: 2px solid rgba(255, 0, 0, 0.7);
+    /* граница с прозрачностью */
+    padding: 15px;
+    /* увеличил отступ */
+    margin: 10px 0;
+    /* добавил внешние отступы */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* лёгкая тень */
+
+}
+
+.err-item {
+    color: red;
 }

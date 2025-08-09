@@ -15,6 +15,14 @@ type GetChatResponse struct {
 	CreatedBy uuid.UUID           `json:"created_by"`
 }
 
+type LoadChatListResponse struct { // перетащи в монго дб
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	IsPrivate bool      `json:"is_private"`
+	CreatedAt time.Time `json:"created_at"`
+	CreatedBy uuid.UUID `json:"created_by"`
+}
+
 type CreateChatRequest struct {
 	Name      string    `json:"name" validate:"max=32"`
 	CreatedBy uuid.UUID `json:"created_by"`
