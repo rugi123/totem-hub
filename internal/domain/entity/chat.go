@@ -3,19 +3,28 @@ package entity
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Chat struct {
-	ID        uuid.UUID
-	IsPrivate bool
-	CreatedAt time.Time
-	CreatedBy uuid.UUID ///user id
+	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	Type      string             `bson:"type"`
+	Title     string             `bson:"title"`
+	CreatedBy primitive.ObjectID `bson:"createdBy"`
+	CreatedAt time.Time          `bson:"createdAt"`
+
+	//динамичекские настройки чата
+	Settings map[string]interface{} `bson:"settings,omitempty"`
 }
 
 type ChatMember struct {
-	ID     uuid.UUID
-	UserID uuid.UUID
-	ChatID uuid.UUID
-	Role   string
+	ID       primitive.ObjectID `bson:"_id,omitempty"`
+	UserID   primitive.ObjectID `bson:"userID,omitempty"`
+	ChatID   primitive.ObjectID `bson:"chatID,omitempty"`
+	JoinedAt time.Time          `bson:"joinedAt"`
+	Role     string             `bson:"role"`
+
+	//динамичные права и настройки
+	Permissions map[string]bool        `bson:"permissions,omitempty"`
+	CustomData  map[string]interface{} `bson:"customData,omitempty"`
 }

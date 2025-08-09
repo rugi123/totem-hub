@@ -3,23 +3,15 @@ package entity
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type User struct {
-	ID        uuid.UUID
-	Name      string
-	Email     string
-	Password  string
-	CreatedAt time.Time
-}
+	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	Username  string             `bson:"username"`
+	Email     string             `bson:"email"`
+	Password  string             `bson:"password"`
+	CreatedAt time.Time          `bson:"createdAt"`
 
-func NewUser(name string, email string, password string) *User {
-	return &User{
-		ID:        uuid.New(),
-		Name:      name,
-		Email:     email,
-		Password:  password,
-		CreatedAt: time.Now(),
-	}
+	Profile map[string]interface{} `bson:"profile,omitempty"`
 }
