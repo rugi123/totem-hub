@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -43,4 +44,8 @@ func InitConfig(path string) (Config, error) {
 			SSLMode:    os.Getenv("POSTGRES_SSL_MODE"),
 		},
 	}, err
+}
+
+func CreateConn(cfg Postgres) string {
+	return fmt.Sprintf(`postgres://%s:%s@%s:%s/%s?sslmode=%s`, cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName, cfg.SSLMode)
 }

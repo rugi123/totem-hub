@@ -15,6 +15,7 @@ import (
 	handler "github.com/rugi123/chirp/internal/transport/http"
 	"github.com/rugi123/chirp/internal/usecase/auth"
 	"github.com/rugi123/chirp/internal/usecase/chat"
+	"github.com/rugi123/chirp/internal/usecase/member"
 	"github.com/rugi123/chirp/internal/usecase/message"
 	"golang.org/x/sync/errgroup"
 )
@@ -22,7 +23,7 @@ import (
 func main() {
 	cfg, err := config.InitConfig(".env")
 	if err != nil {
-		log.Fatalf("failed to load config: %v", err)
+		log.Fatalf("load config error: %v", err)
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -90,7 +91,8 @@ func main() {
 	fmt.Println(memberRepo)
 
 	authUC := auth.NewAuthUsecase(cfg, userRepo)
-	chatUC := chat.NewChatUsecase(cfg, chatRepo, memberRepo)
+	chatUC := chat.NewChatUsecase(cfg, chatRepo)
+	memberUC := member.NewMessageUsecase(cfg, memberRepo)
 	msgUC := message.NewMessageUsecase(cfg, msgRepo)
 
 	handler := handler.NewHanlder(*authUC, *chatUC, *msgUC)
@@ -104,3 +106,5 @@ func main() {
 
 	router.Run(":8080")
 }
+
+func CreateRepositories()

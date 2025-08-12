@@ -3,26 +3,27 @@ package auth
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/rugi123/chirp/internal/config"
 	"github.com/rugi123/chirp/internal/domain/entity"
 )
 
-type Repository interface {
-	GetUserByID(ctx context.Context, id int) (*entity.User, error)
-	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
-	CreateUser(ctx context.Context, user *entity.User) error
-	UpdateUser(ctx context.Context, user *entity.User) error
-	DeleteUser(ctx context.Context, id int) error
+type UserRepository interface {
+	GetByID(ctx context.Context, id uuid.UUID) (*entity.User, error)
+	GetByEmail(ctx context.Context, email string) (*entity.User, error)
+	Create(ctx context.Context, user *entity.User) error
+	Update(ctx context.Context, user *entity.User) error
+	Delete(ctx context.Context, id uuid.UUID) error
 }
 
 type Usecase struct {
-	repo   Repository
-	Config config.Config
+	UserRepo UserRepository
+	Config   config.Config
 }
 
-func NewAuthUsecase(cfg config.Config, repo Repository) *Usecase {
+func NewAuthUsecase(cfg config.Config, repo UserRepository) *Usecase {
 	return &Usecase{
-		Config: cfg,
-		repo:   repo,
+		Config:   cfg,
+		UserRepo: repo,
 	}
 }

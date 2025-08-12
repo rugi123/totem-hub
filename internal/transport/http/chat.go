@@ -18,10 +18,12 @@ func (h *Handler) LoadChatList(ctx *gin.Context) {
 		})
 	}
 
-	chats, member_ids, err = h.chatUC.LoadChatList(ctx, id)
+	chats, err := h.chatUC.LoadChatList(ctx, id)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": fmt.Sprintf("load chats %v", err),
 		})
 	}
+
+	ctx.JSON(http.StatusOK, chats)
 }

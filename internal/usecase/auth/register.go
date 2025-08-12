@@ -18,7 +18,7 @@ func (u *Usecase) Register(ctx context.Context, req *dto.RegisterRequest) (*dto.
 
 	user := entity.NewUser(req.Name, req.Email, string(hash))
 
-	err = u.repo.CreateUser(ctx, user)
+	err = u.UserRepo.Create(ctx, user)
 	if err != nil {
 		return nil, fmt.Errorf("create user error: %w", err)
 	}

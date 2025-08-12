@@ -12,7 +12,7 @@ import (
 )
 
 func (u *Usecase) Login(ctx context.Context, req dto.LoginRequest) (string, error) {
-	user, err := u.repo.GetUserByEmail(ctx, req.Email)
+	user, err := u.UserRepo.GetByEmail(ctx, req.Email)
 	if err != nil {
 		return "", fmt.Errorf("get user error: %w", err)
 	}
