@@ -2,27 +2,41 @@ package chat
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/rugi123/chirp/internal/config"
 	"github.com/rugi123/chirp/internal/domain/entity"
+	"github.com/rugi123/chirp/internal/usecase/member"
 )
 
 type ChatRepository interface {
-	Create(ctx context.Context, chat *entity.Chat) error
-	GetByID(ctx context.Context, id uuid.UUID) (*entity.Chat, error)
-	Update(ctx context.Context, chat *entity.Chat) error
-	Delete(ctx context.Context, id uuid.UUID) error
+	GetByIDs(ctx context.Context, ids []uuid.UUID) (*entity.DataResult, error)
 }
 
 type Usecase struct {
-	ChatRepo ChatRepository
-	Config   config.Config
+	repo       ChatRepository
+	memberRepo member.MemberRepository
 }
 
-func NewChatUsecase(cfg config.Config, chatRepo ChatRepository) *Usecase {
+func NewChatUsecase(repo ChatRepository) *Usecase {
 	return &Usecase{
-		Config:   cfg,
-		ChatRepo: chatRepo,
+		repo: repo,
 	}
+}
+
+func (u *Usecase) LoadChats(ctx context.Context, user_id string) ([]entity.Member, *entity.DataResult, error) {
+	id, err := uuid.Parse(user_id)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed parse id: %w", err)
+	}
+	members, err := u.memberRepo.GetByUserID(ctx, id)
+	if err != nil {
+		return nil, nil, fmt.Errorf("get members error: %w", err)
+	}
+	IDs := entity.ExtractMemberIDs(members)
+	chats, err := u.repo.GetByIDs(ctx, IDs)
+	if err != nil {
+		return nil, nil, fmt.Errorf("get chats error: %w", err)
+	}
+	return members, chats, nil
 }

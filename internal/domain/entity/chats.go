@@ -27,6 +27,12 @@ type Group struct {
 
 type Channel struct {
 	Chat
-	AdminID   uuid.UUID
-	IsPrivate bool
+	Description string
+	IsPrivate   bool
+}
+
+type DataResult struct {
+	Channels []Channel
+	Diologs  []Diolog
+	Groups   []Group
 }

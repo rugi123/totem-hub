@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -18,7 +17,7 @@ func NewMemberRepository(db *database.Postgres) *MemberRepository {
 	return &MemberRepository{PostgresRepository: NewPostgresRepository(db)}
 }
 
-func (r *MemberRepository) GetAll(ctx context.Context, user_id uuid.UUID) ([]entity.Member, error) {
+func (r *MemberRepository) GetByUserID(ctx context.Context, user_id uuid.UUID) ([]entity.Member, error) {
 	query := `
 		SELECT * FROM chat_members
 		WHERE user_id = $1
@@ -42,24 +41,4 @@ func (r *MemberRepository) GetAll(ctx context.Context, user_id uuid.UUID) ([]ent
 	}
 
 	return members, nil
-}
-func (r *MemberRepository) Create(ctx context.Context, member *entity.Member) error {
-	query := `
-		INSERT INTO chat_members (id, user_id, chat_id, role)
-		VALUES($1, $2, $3, $4)
-		`
-	_, err := r.db.Pool.Exec(ctx, query, member.ID, member.UserID, member.ChatID, member.Role)
-	if err != nil {
-		if errors.Is(err, context.Canceled) {
-			return fmt.Errorf("context canceled: %w", err)
-		}
-		return fmt.Errorf("postgres error: %w", err)
-	}
-	return nil
-}
-func (r *MemberRepository) Update(ctx context.Context, member *entity.Member) error {
-	return nil
-}
-func (r *MemberRepository) Delete(ctx context.Context, member_id uuid.UUID) error {
-	return nil
 }

@@ -32,7 +32,7 @@ func (h *Handler) RegisterRoutes(r *gin.Engine) {
 		chatGroup := apiGroup.Group("/chats")
 		{
 			//все чаты
-			chatGroup.GET("/", transport.AuthMiddleware(h.authUC.Config.App.JWTKey), h.LoadChatList)
+			chatGroup.GET("/", transport.AuthMiddleware(h.authUC.Config.App.JWTKey), h.LoadChats)
 
 			//конкретный чат
 			chatGroup.GET("/:id")
