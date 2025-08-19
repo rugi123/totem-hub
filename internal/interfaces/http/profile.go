@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) ShowProfilePage(ctx *gin.Context) {
+func (S *Server) ShowProfilePage(ctx *gin.Context) {
 
 	ctx.HTML(http.StatusOK, "profile.html", nil)
 }

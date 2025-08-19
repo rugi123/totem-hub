@@ -7,32 +7,21 @@ import (
 )
 
 type Chat struct {
-	ID        uuid.UUID
-	Title     string
-	Type      string
-	CreatedAt time.Time
-	CreatedBy uuid.UUID ///user id
+	ID         uuid.UUID
+	Type       string
+	Title      string
+	CreatedAt  time.Time
+	CreatedBy  uuid.UUID
+	Attributes map[string]interface{}
 }
 
-type Diolog struct {
-	Chat
-	User1ID uuid.UUID
-	User2ID uuid.UUID
-}
-
-type Group struct {
-	Chat
-	IsPublic bool
-}
-
-type Channel struct {
-	Chat
-	Description string
-	IsPrivate   bool
-}
-
-type DataResult struct {
-	Channels []Channel
-	Diologs  []Diolog
-	Groups   []Group
+func NewChat(chat_type string, title string, created_by uuid.UUID, attributes map[string]interface{}) Chat {
+	return Chat{
+		ID:         uuid.New(),
+		Type:       chat_type,
+		Title:      title,
+		CreatedAt:  time.Now(),
+		CreatedBy:  created_by,
+		Attributes: attributes,
+	}
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"os/signal"
 	"syscall"
 	"time"
@@ -12,99 +11,105 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rugi123/chirp/internal/config"
 	"github.com/rugi123/chirp/internal/repository/postgres"
-	handler "github.com/rugi123/chirp/internal/transport/http"
-	"github.com/rugi123/chirp/internal/usecase/auth"
+	"github.com/rugi123/chirp/internal/transport/http"
 	"github.com/rugi123/chirp/internal/usecase/chat"
 	"github.com/rugi123/chirp/internal/usecase/member"
 	"github.com/rugi123/chirp/internal/usecase/message"
-	"golang.org/x/sync/errgroup"
+	"github.com/rugi123/chirp/internal/usecase/user"
+	"github.com/rugi123/chirp/pkg/database"
 )
 
 func main() {
+	// Инициализация конфигурации
 	cfg, err := config.InitConfig(".env")
 	if err != nil {
-		log.Fatalf("load config error: %v", err)
+		log.Fatalf("Failed to load config: %v", err)
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
+	// Инициализация контекста с graceful shutdown
+	ctx, cancel := signal.NotifyContext(
+		context.Background(),
+		syscall.SIGINT,
+		syscall.SIGTERM,
+	)
 	defer cancel()
 
-	go func() {
-		sigChan := make(chan os.Signal, 1)
-		signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
-		<-sigChan
-		log.Panicln("received shutdown signal")
-		cancel()
-	}()
-
+	// Инициализация базы данных с таймаутом
 	initCtx, initCancel := context.WithTimeout(ctx, 10*time.Second)
 	defer initCancel()
 
-	g, gCtx := errgroup.WithContext(initCtx)
+	db, err := database.NewPostgres(initCtx, config.CreateConn(cfg.Postgres))
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer db.Close() // Закрываем соединение при завершении
 
-	var (
-		userRepo   *postgres.UserRepo
-		chatRepo   *postgres.ChatRepo
-		memberRepo *postgres.MemberRepo
-		msgRepo    *postgres.MessageRepo
-	)
-
-	g.Go(func() error {
-		var err error
-		userRepo, err = postgres.NewUserRepo(gCtx, cfg.Postgres)
-		if err != nil {
-			return fmt.Errorf("failed to init user repo: %w", err)
-		}
-		return nil
-	})
-	g.Go(func() error {
-		var err error
-		chatRepo, err = postgres.NewChatRepo(gCtx, cfg.Postgres)
-		if err != nil {
-			return fmt.Errorf("failed to init chat repo: %w", err)
-		}
-		return nil
-	})
-	g.Go(func() error {
-		var err error
-		memberRepo, err = postgres.NewMemberRepo(gCtx, cfg.Postgres)
-		if err != nil {
-			return fmt.Errorf("failed to init chat repo: %w", err)
-		}
-		return nil
-	})
-	g.Go(func() error {
-		var err error
-		msgRepo, err = postgres.NewMessageRepo(gCtx, cfg.Postgres)
-		if err != nil {
-			return fmt.Errorf("failed to init message repo: %w", err)
-		}
-		return nil
-	})
-
-	if err := g.Wait(); err != nil {
-		log.Fatalf("initialization failed: %v", err)
+	// Инициализация репозиториев
+	repos := struct {
+		user    *postgres.UserRepository
+		chat    *postgres.ChatRepository
+		member  *postgres.MemberRepository
+		message *postgres.MessageRepository
+	}{
+		user:    postgres.NewUserRepository(db),
+		chat:    postgres.NewChatRepository(db),
+		member:  postgres.NewMemberRepository(db),
+		message: postgres.NewMessageRepository(db),
 	}
 
-	//тут юзкейсы
+	// Инициализация use cases
+	useCases := struct {
+		user    *user.Usecase
+		chat    *chat.Usecase
+		member  *member.Usecase
+		message *message.Usecase
+	}{
+		user:    user.NewUsecase(repos.user),
+		chat:    chat.NewUsecase(repos.chat),
+		member:  member.NewUsecase(repos.member),
+		message: message.NewUsecase(repos.message),
+	}
 
-	fmt.Println(memberRepo)
-
-	authUC := auth.NewAuthUsecase(cfg, userRepo)
-	chatUC := chat.NewChatUsecase(cfg, chatRepo)
-	memberUC := member.NewMessageUsecase(cfg, memberRepo)
-	msgUC := message.NewMessageUsecase(cfg, msgRepo)
-
-	handler := handler.NewHanlder(*authUC, *chatUC, *msgUC)
-
+	// Инициализация HTTP сервера
 	router := gin.Default()
-
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/static", "./static")
 
-	handler.RegisterRoutes(router)
+	httpServer := http.NewServer(
+		cfg.App,
+		*useCases.user,
+		*useCases.chat,
+		*useCases.member,
+		*useCases.message,
+	)
+	httpServer.RegisterRoutes(router, cfg.App)
 
-	router.Run(":8080")
+	// Запуск сервера в отдельной goroutine
+	serverErr := make(chan error, 1)
+	go func() {
+		log.Printf("Starting server on :%s", cfg.App.Port)
+		if err := router.Run(fmt.Sprintf(":%s", cfg.App.Port)); err != nil {
+			serverErr <- fmt.Errorf("server failed: %w", err)
+		}
+	}()
+
+	// Ожидание shutdown сигнала или ошибки сервера
+	select {
+	case <-ctx.Done():
+		log.Println("Shutting down gracefully...")
+	case err := <-serverErr:
+		log.Printf("Server error: %v", err)
+		cancel()
+	}
+
+	// Дополнительное время для graceful shutdown
+	shutdownCtx, shutdownCancel := context.WithTimeout(
+		context.Background(),
+		5*time.Second,
+	)
+	defer shutdownCancel()
+
+	// Здесь можно добавить закрытие других ресурсов (например, соединений с БД)
+	<-shutdownCtx.Done()
+	log.Println("Server exited")
 }
-
-func CreateRepositories()

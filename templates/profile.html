@@ -5,32 +5,23 @@
     <meta charset="UTF-8">
     <title>Личный кабинет</title>
     <link rel="stylesheet" href="/static/css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
     <div class="chat-container">
-        <div class="chat-list">
-            <!-- список чатов -->
-            <div class="chat-item" data-chat-id="1">
-                <div class="chat-avatar"></div>
-                <div class="chat-info">
-                    <div class="chat-name">Чат 1</div>
-                    <div class="chat-preview">Последнее сообщение...</div>
-                </div>
-            </div>
-            <div class="chat-item" data-chat-id="2">
-                <div class="chat-avatar"></div>
-                <div class="chat-info">
-                    <div class="chat-name">Чат 2</div>
-                    <div class="chat-preview">Другое сообщение...</div>
-                </div>
-            </div>
-            <!-- другие чаты -->
-        </div>
+        <div class="chat-list" id="chat-container"></div>
 
         <div class="chat-content">
-            <!-- здесь будет отображаться содержимое выбранного чата -->
-            <div class="chat-empty">Выберите чат для начала общения</div>
+            <div class="messages" id="chat-content"></div>
+            <div class="message-form-background">
+                <form class="message-form" id="message-form">
+                    <input class="message-input" name="text" type="text" placeholder="Введите сообщение..." required>
+                    <button class="message-submit" type="submit">
+                        <i class="fa fa-paper-plane fa-lg"></i>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
     <script src="/static/js/profile.js"></script>

@@ -10,6 +10,7 @@ import (
 type App struct {
 	Version     string
 	LoggerLevel string
+	Port        string
 	JWTKey      string
 }
 
@@ -33,6 +34,7 @@ func InitConfig(path string) (Config, error) {
 		App: App{
 			Version:     os.Getenv("APP_VERSION"),
 			LoggerLevel: os.Getenv("LOGGER_LEVEL"),
+			Port:        os.Getenv("PORT"),
 			JWTKey:      os.Getenv("JWT_SECRET"),
 		},
 		Postgres: Postgres{

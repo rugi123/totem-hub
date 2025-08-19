@@ -9,7 +9,7 @@ import (
 	"github.com/rugi123/chirp/pkg/validator"
 )
 
-func (h *Handler) Login(ctx *gin.Context) {
+func (s *Server) Login(ctx *gin.Context) {
 	var dto dto.LoginRequest
 	err := ctx.ShouldBindBodyWithJSON(&dto)
 	if err != nil {
@@ -26,7 +26,7 @@ func (h *Handler) Login(ctx *gin.Context) {
 		return
 	}
 
-	token, err := h.authUC.Login(ctx, dto)
+	token, err := s.userUC.Login(ctx, dto, s.config.JWTKey)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "get user: " + err.Error(),
@@ -34,14 +34,14 @@ func (h *Handler) Login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("token", token, int(time.Now().Add(15+time.Minute).Unix()), "/", "localhost", true, true)
+	ctx.SetCookie("token", token, int(15*time.Minute), "/", "localhost", true, true)
 
 	ctx.JSON(http.StatusOK, nil)
 
 	ctx.Redirect(http.StatusPermanentRedirect, "/profile")
 }
 
-func (h *Handler) Register(ctx *gin.Context) {
+func (s *Server) Register(ctx *gin.Context) {
 	var dto dto.RegisterRequest
 	err := ctx.ShouldBindBodyWithJSON(&dto)
 	if err != nil {
@@ -58,7 +58,7 @@ func (h *Handler) Register(ctx *gin.Context) {
 		return
 	}
 
-	id, err := h.authUC.Register(ctx, &dto)
+	id, err := s.userUC.Register(ctx, &dto)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "create user: " + err.Error(),

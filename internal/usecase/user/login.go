@@ -1,4 +1,4 @@
-package auth
+package user
 
 import (
 	"context"
@@ -7,11 +7,11 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/rugi123/chirp/internal/dto"
-	"github.com/rugi123/chirp/internal/transport"
+	"github.com/rugi123/chirp/internal/interfaces"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (u *Usecase) Login(ctx context.Context, req dto.LoginRequest) (string, error) {
+func (u *Usecase) Login(ctx context.Context, req dto.LoginRequest, jwtKey string) (string, error) {
 	user, err := u.UserRepo.GetByEmail(ctx, req.Email)
 	if err != nil {
 		return "", fmt.Errorf("get user error: %w", err)
@@ -22,8 +22,8 @@ func (u *Usecase) Login(ctx context.Context, req dto.LoginRequest) (string, erro
 		return "", fmt.Errorf("check password error: %w", err)
 	}
 
-	expirationTime := time.Now().Add(15 + time.Minute)
-	claims := &transport.Claims{
+	expirationTime := time.Now().Add(15 * time.Minute)
+	claims := &interfaces.Claims{
 		UserID: user.ID.String(),
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
@@ -34,7 +34,7 @@ func (u *Usecase) Login(ctx context.Context, req dto.LoginRequest) (string, erro
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	fmt.Println(token)
-	tokenString, err := token.SignedString([]byte(u.Config.App.JWTKey))
+	tokenString, err := token.SignedString([]byte(jwtKey))
 	if err != nil {
 		return "", fmt.Errorf("create token error: %w", err)
 	}

@@ -1,10 +1,9 @@
-package auth
+package user
 
 import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/rugi123/chirp/internal/config"
 	"github.com/rugi123/chirp/internal/domain/entity"
 )
 
@@ -18,12 +17,10 @@ type UserRepository interface {
 
 type Usecase struct {
 	UserRepo UserRepository
-	Config   config.Config
 }
 
-func NewAuthUsecase(cfg config.Config, repo UserRepository) *Usecase {
+func NewUsecase(repo UserRepository) *Usecase {
 	return &Usecase{
-		Config:   cfg,
 		UserRepo: repo,
 	}
 }

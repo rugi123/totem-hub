@@ -30,3 +30,7 @@ func NewPostgres(ctx context.Context, conn string) (*Postgres, error) {
 	}
 	return &Postgres{Pool: pool}, nil
 }
+
+func (db Postgres) Close() {
+	db.Pool.Close()
+}

@@ -17,7 +17,7 @@ func NewMemberRepository(db *database.Postgres) *MemberRepository {
 	return &MemberRepository{PostgresRepository: NewPostgresRepository(db)}
 }
 
-func (r *MemberRepository) GetByUserID(ctx context.Context, user_id uuid.UUID) ([]entity.Member, error) {
+func (r *MemberRepository) GetMembers(ctx context.Context, user_id uuid.UUID) ([]entity.Member, error) {
 	query := `
 		SELECT * FROM chat_members
 		WHERE user_id = $1
@@ -41,4 +41,13 @@ func (r *MemberRepository) GetByUserID(ctx context.Context, user_id uuid.UUID) (
 	}
 
 	return members, nil
+}
+
+func (r *MemberRepository) GetMember(ctx context.Context, user_id uuid.UUID) (*entity.Member, error) {
+	query := `
+		SELECT * FROM chat_members
+		WHERE user_id = $1`
+	var member entity.Member
+	err := r.db.Pool.QueryRow(ctx, query, user_id).Scan(&member.ID, &member.UserID, &member.ChatID, &member.Role, &member.IsMuted)
+	return nil, err
 }
