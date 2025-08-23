@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/rugi123/chirp/internal/domain/entity"
-	"github.com/rugi123/chirp/internal/dto"
+	"github.com/rugi123/totem-hub/internal/domain/entity"
+	"github.com/rugi123/totem-hub/internal/dto"
 )
 
 type ChatRepository interface {

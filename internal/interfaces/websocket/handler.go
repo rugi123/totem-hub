@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/rugi123/chirp/internal/dto"
+	"github.com/rugi123/totem-hub/internal/dto"
 )
 
 var upgrader = websocket.Upgrader{

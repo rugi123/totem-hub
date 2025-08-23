@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rugi123/chirp/internal/dto"
-	"github.com/rugi123/chirp/pkg/validator"
+	"github.com/rugi123/totem-hub/internal/dto"
+	"github.com/rugi123/totem-hub/pkg/validator"
 )
 
 func (s *Server) Login(ctx *gin.Context) {

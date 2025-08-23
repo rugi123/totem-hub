@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/rugi123/chirp/pkg/database"
+	"github.com/rugi123/totem-hub/pkg/database"
 )
 
 type PostgresRepository struct {

@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/rugi123/chirp/internal/dto"
-	"github.com/rugi123/chirp/internal/interfaces"
+	"github.com/rugi123/totem-hub/internal/dto"
+	"github.com/rugi123/totem-hub/internal/interfaces"
 	"golang.org/x/crypto/bcrypt"
 )
 

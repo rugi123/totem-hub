@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rugi123/chirp/internal/config"
-	"github.com/rugi123/chirp/internal/interfaces"
-	"github.com/rugi123/chirp/internal/interfaces/websocket"
+	"github.com/rugi123/totem-hub/internal/config"
+	"github.com/rugi123/totem-hub/internal/interfaces"
+	"github.com/rugi123/totem-hub/internal/interfaces/websocket"
 )
 
 func (s *Server) RegisterRoutes(r *gin.Engine, cfg config.App) {

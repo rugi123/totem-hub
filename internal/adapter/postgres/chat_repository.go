@@ -5,8 +5,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/rugi123/chirp/internal/domain/entity"
-	"github.com/rugi123/chirp/pkg/database"
+	"github.com/rugi123/totem-hub/internal/domain/entity"
+	"github.com/rugi123/totem-hub/pkg/database"
 )
 
 type ChatRepository struct {

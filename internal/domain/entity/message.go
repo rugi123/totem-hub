@@ -14,3 +14,13 @@ type Message struct {
 	SentAt   time.Time
 	EditedAt sql.NullTime
 }
+
+func NewMessage(memberID uuid.UUID, text string) *Message {
+	return &Message{
+		ID:       uuid.New(),
+		MemberID: memberID,
+		Text:     text,
+		SentAt:   time.Now(),
+		EditedAt: sql.NullTime{},
+	}
+}

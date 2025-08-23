@@ -9,14 +9,14 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rugi123/chirp/internal/config"
-	"github.com/rugi123/chirp/internal/repository/postgres"
-	"github.com/rugi123/chirp/internal/transport/http"
-	"github.com/rugi123/chirp/internal/usecase/chat"
-	"github.com/rugi123/chirp/internal/usecase/member"
-	"github.com/rugi123/chirp/internal/usecase/message"
-	"github.com/rugi123/chirp/internal/usecase/user"
-	"github.com/rugi123/chirp/pkg/database"
+	"github.com/rugi123/totem-hub/internal/config"
+	"github.com/rugi123/totem-hub/internal/repository/postgres"
+	"github.com/rugi123/totem-hub/internal/transport/http"
+	"github.com/rugi123/totem-hub/internal/usecase/chat"
+	"github.com/rugi123/totem-hub/internal/usecase/member"
+	"github.com/rugi123/totem-hub/internal/usecase/message"
+	"github.com/rugi123/totem-hub/internal/usecase/user"
+	"github.com/rugi123/totem-hub/pkg/database"
 )
 
 func main() {

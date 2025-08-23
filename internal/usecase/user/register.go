@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/rugi123/chirp/internal/domain/entity"
-	"github.com/rugi123/chirp/internal/dto"
+	"github.com/rugi123/totem-hub/internal/domain/entity"
+	"github.com/rugi123/totem-hub/internal/dto"
 	"golang.org/x/crypto/bcrypt"
 )
 

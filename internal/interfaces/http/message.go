@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rugi123/chirp/internal/interfaces"
+	"github.com/rugi123/totem-hub/internal/interfaces"
 )
 
 func (s *Server) GetChatMessages(ctx *gin.Context) {

@@ -1,4 +1,4 @@
-module github.com/rugi123/chirp
+module github.com/rugi123/totem-hub
 
 go 1.24.4
 

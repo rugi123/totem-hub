@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/rugi123/chirp/internal/domain/entity"
+	"github.com/rugi123/totem-hub/internal/domain/entity"
 )
 
 type UserRepository interface {

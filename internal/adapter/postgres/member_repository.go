@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/rugi123/chirp/internal/domain/entity"
-	"github.com/rugi123/chirp/pkg/database"
+	"github.com/rugi123/totem-hub/internal/domain/entity"
+	"github.com/rugi123/totem-hub/pkg/database"
 )
 
 type MemberRepository struct {

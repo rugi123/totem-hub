@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/rugi123/chirp/internal/domain/entity"
-	"github.com/rugi123/chirp/pkg/database"
+	"github.com/rugi123/totem-hub/internal/domain/entity"
+	"github.com/rugi123/totem-hub/pkg/database"
 )
 
 type MessageRepository struct {
@@ -56,7 +56,7 @@ func (r *MessageRepository) GetMessagesByChatID(ctx context.Context, chatID uuid
 
 	return messages, nil
 }
-func (r *MessageRepository) Create(ctx context.Context, msg *entity.Message) error {
+func (r *MessageRepository) Save(ctx context.Context, msg *entity.Message) error {
 	query := `
 		INSERT INTO messages (id, chat_member_id, text, sent_at, edited_at)
 		VALUES ($1, $2, $3, $4, $5)

@@ -2,9 +2,9 @@ package chat
 
 import (
 	"github.com/google/uuid"
-	"github.com/rugi123/chirp/internal/domain/entity"
-	"github.com/rugi123/chirp/internal/dto"
-	"github.com/rugi123/chirp/pkg/validator"
+	"github.com/rugi123/totem-hub/internal/domain/entity"
+	"github.com/rugi123/totem-hub/internal/dto"
+	"github.com/rugi123/totem-hub/pkg/validator"
 )
 
 type ChatCreator interface {

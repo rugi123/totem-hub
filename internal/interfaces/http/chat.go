@@ -6,8 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/rugi123/chirp/internal/dto"
-	"github.com/rugi123/chirp/internal/interfaces"
+	"github.com/rugi123/totem-hub/internal/dto"
+	"github.com/rugi123/totem-hub/internal/interfaces"
 )
 
 func (s *Server) GetChatsWithMembers(ctx *gin.Context) {
