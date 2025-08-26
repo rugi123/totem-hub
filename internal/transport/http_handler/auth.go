@@ -1,4 +1,4 @@
-package http
+package http_handler
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ import (
 	"github.com/rugi123/totem-hub/pkg/validator"
 )
 
-func (s *Server) Login(ctx *gin.Context) {
+func (h *HTTPHandler) Login(ctx *gin.Context) {
 	var dto dto.LoginRequest
 	err := ctx.ShouldBindBodyWithJSON(&dto)
 	if err != nil {
@@ -41,7 +41,7 @@ func (s *Server) Login(ctx *gin.Context) {
 	ctx.Redirect(http.StatusPermanentRedirect, "/profile")
 }
 
-func (s *Server) Register(ctx *gin.Context) {
+func (h *HTTPHandler) Register(ctx *gin.Context) {
 	var dto dto.RegisterRequest
 	err := ctx.ShouldBindBodyWithJSON(&dto)
 	if err != nil {

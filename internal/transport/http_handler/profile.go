@@ -1,4 +1,4 @@
-package http
+package http_handler
 
 import (
 	"net/http"
@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (S *Server) ShowProfilePage(ctx *gin.Context) {
-
+func (h *HTTPHandler) ShowProfilePage(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "profile.html", nil)
 }

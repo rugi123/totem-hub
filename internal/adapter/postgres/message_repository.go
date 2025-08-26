@@ -18,7 +18,7 @@ func NewMessageRepository(db *database.Postgres) *MessageRepository {
 	return &MessageRepository{PostgresRepository: NewPostgresRepository(db)}
 }
 
-func (r *MessageRepository) GetMessagesByChatID(ctx context.Context, chatID uuid.UUID, userID uuid.UUID) ([]entity.Message, error) {
+func (r *MessageRepository) GetByChatID(ctx context.Context, chatID uuid.UUID, userID uuid.UUID) ([]entity.Message, error) {
 
 	query := `
         SELECT m.id, m.chat_member_id, m.text, m.sent_at, m.edited_at 
